@@ -19,11 +19,7 @@
 function GameObject(attr) {
   this.createdAt = attr.createdAt;
   this.name = attr.name;
-  this.dimensions = {
-    length: attr.dimensions,
-    width: attr.dimensions,
-    height: attr.dimensions
-  }
+  this.dimensions = attr.dimensions;
 }
 
 GameObject.prototype.destroy = function() {
@@ -73,7 +69,7 @@ Humanoid.prototype = Object.create(CharacterStats.prototype); // get access to C
 
 
 Humanoid.prototype.greet = function() {
-  return `${this.name} offers a greeting ${this.language}`
+  return `${this.name} offers a greeting in ${this.language}`
 }
  
 /*
@@ -95,7 +91,7 @@ Humanoid.prototype.greet = function() {
     name: 'Bruce',
     team: 'Mage Guild',
     weapons: [
-      'Staff of Shamalama',
+      'Staff of Shamalama'
     ],
     language: 'Common Tongue',
   });
@@ -149,3 +145,82 @@ Humanoid.prototype.greet = function() {
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+
+  //// Hero and Villain Constructor Functions: 
+
+  function Villain(attrVillain) {
+    this.special_skill = attrVillain.special_skill;
+    Humanoid.call(this,attrVillain);
+  }
+
+  Villain.prototype = Object.create(Humanoid.prototype);
+  Villain.prototype.villainWinner = function() {
+    theHero.healthPoints = 0;
+    return `The Hero, ${theHero.name}, has ${theHero.healthPoints} points. ${this.name} is the winner!! he world is doomed!!!`
+  }
+
+
+  function Hero(attrHero) {
+    Humanoid.call(this,attrHero);
+  }
+
+
+  Hero.prototype = Object.create(Humanoid.prototype);
+  Hero.prototype.heroWinner = function() {
+    theVillain.healthPoints = 0;
+    return `The Villain, ${theVillain.name}, has ${theVillain.healthPoints} points. ${this.name} is the winner!! The world is saved!!!`
+  }
+
+
+//// Hero and Villain Objects: 
+
+
+  const theVillain = new Villain({
+    createdAt: new Date(),
+    dimensions: {
+      length: 5,
+      width: 2,
+      height: 5,
+    },
+    healthPoints: 1000,
+    name: 'World Ruler',
+    team: 'What\'s a team?',
+    weapons: [
+      'Giant Hammer',
+      'Bare Fist',
+    ],
+    language: 'Fire Dagger',
+  });
+
+  const theHero = new Hero({
+    createdAt: new Date(),
+    dimensions: {
+      length: 4,
+      width: 3,
+      height: 6,
+    },
+    healthPoints: 1000,
+    name: 'Helper',
+    team: 'Hero\'s Only',
+    weapons: [
+      'Heavy Sword',
+      'Giant Shield',
+    ],
+    language: 'Whisper',
+  });
+
+
+
+   console.log(theVillain.createdAt); 
+  console.log(theHero.dimensions); 
+  console.log(theVillain.healthPoints); 
+  console.log(theHero.name);
+  console.log(theHero.team);
+  console.log(theVillain.team);
+  console.log(theVillain.weapons); 
+  console.log(theVillain.language);
+  console.log(theVillain.greet()); 
+  console.log(theVillain.takeDamage());
+  console.log(theHero.heroWinner());
+  console.log(theVillain.healthPoints); 
