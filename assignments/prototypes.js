@@ -16,12 +16,35 @@
   * destroy() // prototype method that returns: '{this.name} was removed from the game.'
 */
 
+function GameObject(attr) {
+  this.createdAt = attr.createdAt;
+  this.name = attr.name;
+  this.dimensions = attr.dimensions;
+}
+
+GameObject.prototype.destroy = function() {
+  return `${this.name} was removed from the game.`
+}
+
 /*
   === CharacterStats ===
   * healthPoints
   * takeDamage() // prototype method -> returns the string '<object name> took damage.'
   * should inherit destroy() from GameObject's prototype
 */
+function CharacterStats(attrCharacter) {
+  this.healthPoints = attrCharacter.healthPoints;
+  GameObject.call(this,attrCharacter); // Inherit attributes from GameObject
+
+}
+
+CharacterStats.prototype = Object.create(GameObject.prototype); // get access to GameObject prototype method 
+
+
+CharacterStats.prototype.takeDamage = function() {
+  return `${this.name} took damage.`
+}
+
 
 /*
   === Humanoid (Having an appearance or character resembling that of a human.) ===
@@ -32,6 +55,22 @@
   * should inherit destroy() from GameObject through CharacterStats
   * should inherit takeDamage() from CharacterStats
 */
+
+function Humanoid(attrHumanoid) {
+  this.team = attrHumanoid.team;
+  this.weapons = attrHumanoid.weapons;
+  this.language = attrHumanoid.language;
+  CharacterStats.call(this,attrHumanoid);
+  
+
+}
+
+Humanoid.prototype = Object.create(CharacterStats.prototype); // get access to CharaterStats prototype method 
+
+
+Humanoid.prototype.greet = function() {
+  return `${this.name} offers a greeting in ${this.language}`
+}
  
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
@@ -41,7 +80,6 @@
 
 // Test you work by un-commenting these 3 objects and the list of console logs below:
 
-/*
   const mage = new Humanoid({
     createdAt: new Date(),
     dimensions: {
@@ -53,7 +91,7 @@
     name: 'Bruce',
     team: 'Mage Guild',
     weapons: [
-      'Staff of Shamalama',
+      'Staff of Shamalama'
     ],
     language: 'Common Tongue',
   });
@@ -102,9 +140,87 @@
   console.log(archer.greet()); // Lilith offers a greeting in Elvish.
   console.log(mage.takeDamage()); // Bruce took damage.
   console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
-*/
 
   // Stretch task: 
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+
+  //// Hero and Villain Constructor Functions: 
+
+  function Villain(attrVillain) {
+    this.special_skill = attrVillain.special_skill;
+    Humanoid.call(this,attrVillain);
+  }
+
+  Villain.prototype = Object.create(Humanoid.prototype);
+  Villain.prototype.villainWinner = function() {
+    theHero.healthPoints = 0;
+    return `The Hero, ${theHero.name}, has ${theHero.healthPoints} points. ${this.name} is the winner!! he world is doomed!!!`
+  }
+
+
+  function Hero(attrHero) {
+    Humanoid.call(this,attrHero);
+  }
+
+
+  Hero.prototype = Object.create(Humanoid.prototype);
+  Hero.prototype.heroWinner = function() {
+    theVillain.healthPoints = 0;
+    return `The Villain, ${theVillain.name}, has ${theVillain.healthPoints} points. ${this.name} is the winner!! The world is saved!!!`
+  }
+
+
+//// Hero and Villain Objects: 
+
+
+  const theVillain = new Villain({
+    createdAt: new Date(),
+    dimensions: {
+      length: 5,
+      width: 2,
+      height: 5,
+    },
+    healthPoints: 1000,
+    name: 'World Ruler',
+    team: 'What\'s a team?',
+    weapons: [
+      'Giant Hammer',
+      'Bare Fist',
+    ],
+    language: 'Fire Dagger',
+  });
+
+  const theHero = new Hero({
+    createdAt: new Date(),
+    dimensions: {
+      length: 4,
+      width: 3,
+      height: 6,
+    },
+    healthPoints: 1000,
+    name: 'Helper',
+    team: 'Hero\'s Only',
+    weapons: [
+      'Heavy Sword',
+      'Giant Shield',
+    ],
+    language: 'Whisper',
+  });
+
+
+
+   console.log(theVillain.createdAt); 
+  console.log(theHero.dimensions); 
+  console.log(theVillain.healthPoints); 
+  console.log(theHero.name);
+  console.log(theHero.team);
+  console.log(theVillain.team);
+  console.log(theVillain.weapons); 
+  console.log(theVillain.language);
+  console.log(theVillain.greet()); 
+  console.log(theVillain.takeDamage());
+  console.log(theHero.heroWinner());
+  console.log(theVillain.healthPoints); 
